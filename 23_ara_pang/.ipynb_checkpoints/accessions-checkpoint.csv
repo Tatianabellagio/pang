@@ -1,0 +1,33 @@
+Name,CS_Number,Country,Latitude,Longitude,Altitude,Group
+Yilong-0,CS79063,China,31.56402,106.7062,506,Non-Relict
+Bor-1,CS22590,Czech Republic,49.4013,16.2326,697,Non-Relict
+Cdm-0,CS76410,Spain,39.73,-5.74,157,Non-Relict
+Got-22,CS22609,Germany,51.5338,9.9355,310,Non-Relict
+Kondara,CS22651,Tajikistan,38.48,68.49,641,Non-Relict
+Kz-9,CS22607,Kazakhstan,49.5,73.1,283,Non-Relict
+LL-0,CS22650,Spain,41.59,2.49,329,Non-Relict
+Mammo-1,CS76365,Italy,38.36,16.23,146,Non-Relict
+Ms-0,CS22655,Russian Federation,55.7522,37.6322,2306,Non-Relict
+Pra-6,CS76416,Spain,41.05,-3.54,440,Non-Relict
+Pu2-23,CS22593,Czech Republic,49.42,16.36,2698,Non-Relict
+Sij-1,CS76379,Uzbekistan,41.45,70.05,666,Non-Relict
+Sorbo,CS22653,Tajikistan,38.35,68.48,350,Non-Relict
+TueSB30-3,CS76403,Germany,48.53,9.06,165,Non-Relict
+Hs-0,CS76145,Germany,52.24,9.44,42,Non-Relict
+LI-OF-095,CS76165,United States of America,40.9447,-72.8615,148,Non-Relict
+Per-1,CS76210,Russian Federation,58,56.3167,148,Non-Relict
+St-0,CS76231,Sweden,59,18,25,Non-Relict
+Kelsterbach-2,CS28382,Germany,50.0667,8.5333,93,Non-Relict
+Nz-1,CS28578,New Zealand,-37.7871,175.283,48,Non-Relict
+Dra-2,CS28214,Czech Republic,49.4167,16.2667,536,Non-Relict
+Belmonte-4-94,CS76095,Italy,42.1167,12.4833,218,Non-Relict
+Sha/Ara-1,CS76382,Afghanistan,37.29,71.3,4058,Non-Relict
+Sij-2,CS76380,Uzbekistan,41.45,70.05,2698,Non-Relict
+Col-0,CS76778,United States of America,38.3,-92.3,182,Non-Relict
+AH-7,-,China,31.19968,115.8067,518,Non-Relict
+Tibet-0,CS79062,China,29.68976,91.1861,4317,Relict
+Etna-2,CS76487,Italy,37.69,14.98,1660,Relict
+Meh-0,CS799916,Morocco,33.9561,-4.0515,1320,Relict
+Elk-1,CS799922,Morocco,32.5352,-6.015,1231,Relict
+Ket-10,CS799912,Morocco,34.9608,-4.6661,1607,Relict
+Arb-0,CS799926,Morocco,31.4199,-7.5262,1097,Relict
