@@ -1,0 +1,16 @@
+Col-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Ms-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Ms-0.fasta
+Dog-4	/home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
+Sus-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta
+No-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+Kar-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Kar-1.fasta
+Can-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Can-0.fasta
+St-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/St-0.fasta
+Cvi-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta
+Ct-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Ct-1.fasta
+Altai-5	/home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
+Qar-8a	/home/tbellagio/scratch/pang/pang_experiment/genomes/Qar-8a.fasta
+Oy-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Oy-0.fasta
+Zal-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Zal-1.fasta
+Anz-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
+Rubezhnoe-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Rubezhnoe-1.fasta

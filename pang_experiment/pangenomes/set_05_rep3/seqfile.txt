@@ -1,0 +1,6 @@
+Col-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Toufl-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Toufl-1.fasta
+Sus-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta
+Stw-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Stw-0.fasta
+No-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+Cvi-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta

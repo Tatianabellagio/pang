@@ -1,0 +1,98 @@
+First I downloaded the 69 assemblies from https://edmond.mpg.de/dataset.xhtml?persistentId=doi:10.17617/3.AEOJBL
+Created a mamba environment and instaled cactus inside https://github.com/ComparativeGenomicsToolkit/cactus/blob/v3.1.0/BIN-INSTALL.md
+
+Create the seqfile that includes sample_name   path/to/fasta
+
+cd ~/scratch/pang/pang_69/upload_genome
+ls *.fasta | sed 's/.fasta//' | awk '{print $1"\t"$1".fasta"}' > seqfile.txt
+
+
+cactus-pangenome \
+    jobstore \
+    seqfile.txt \
+    --outDir output_pangraph \
+    --outName arabidopsis69 \
+    --reference Col-0 \
+    --vcf --gbz --gfa --giraffe \
+    --mgCores 32 \
+    --mapCores 8 \
+    --consCores 32 \
+    --indexCores 32 \
+    --maxLen 10000 \
+    --haplo
+
+
+
+7.685 hours for #SBATCH --cpus-per-task=8
+#SBATCH --mem=120G for 19 assemblies     --mgCores 32 \
+    --mapCores 8 \
+    --consCores 32 \
+    --indexCores 32 \
+
+
+ok after that, we install vg, becasue we will use vg jiraffe to align teh short reads to the pg 
+
+ok lets start with MLFH041020180321
+
+Paths to indexes
+GRAPH=~/scratch/pang/pang_69/upload_genome/pangraph_output/arabidopsis69filtered.d2.gbz
+DIST=~/scratch/pang/pang_69/upload_genome/pangraph_output/arabidopsis69filtered.d2.dist
+MIN=~/scratch/pang/pang_69/upload_genome/pangraph_output/arabidopsis69filtered.d2.shortread.withzip.min
+ZIP=~/scratch/pang/pang_69/upload_genome/pangraph_output/arabidopsis69filtered.d2.shortread.zipcodes
+
+# Input reads
+R1=~/scratch/pang/grenenet_reads/grenenet-phase1/2021-05-03-ath-release-07/raw_data/MLFH041020180321/*_1.fq.gz
+R2=~/scratch/pang/grenenet_reads/grenenet-phase1/2021-05-03-ath-release-07/raw_data/MLFH041020180321/*_2.fq.gz
+
+# Output
+OUT=MLFH041020180321.gam
+
+# Run giraffe
+vg giraffe \
+    -Z $GRAPH \
+    -d $DIST \
+    -m $MIN \
+    -z $ZIP \
+    -f $R1 \
+    -f $R2 \
+    -t 32 \
+    > $OUT
+
+## ok now that vg jiraffe has run now i can checout the MLFH041020180321.gam  
+
+first stats 
+vg stats -a MLFH041020180321.gam > gam_stats.txt
+this will indicate how well the reads where mapped 
+
+calcualte coverage (read support)
+
+vg pack \
+    -x ~/scratch/pang/pang_69/upload_genome/pangraph_output/arabidopsis69filtered.d2.gbz \
+    -g MLFH041020180321.gam \
+    -o MLFH041020180321.pack \
+    -t 2
+
+# to filter based on quality:  -Q 5
+
+also this will create a MLFH041020180321.node_coverage.tsv  
+
+
+and now snarls vg snarls \
+    -t 16 \
+    $GRAPH \
+    > $OUT
+
+
+we need pack and snarls before vg call 
+
+ok now, becasue vg call is designed fro single individual samples, we need to get a lil creative here
+
+one option is to use vg call -T that would -T, --traversals          output all candidate traversals in GAF
+                            without doing any genotyping
+
+this will output a gaf file 
+
+i removed empty fasta files 
+
+cd ~/scratch/pang/pang_experiment/genomes
+rm Istisu-1.fasta Lu-1.fasta Pa-1.fasta

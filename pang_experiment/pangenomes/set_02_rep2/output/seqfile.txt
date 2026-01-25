@@ -1,0 +1,4 @@
+Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Dog-4	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
+No-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+_MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_02_rep2/output/set_02_rep2.sv.gfa.fa.gz

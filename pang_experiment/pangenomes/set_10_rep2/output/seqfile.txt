@@ -1,0 +1,12 @@
+Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Dog-4	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
+No-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+Can-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Can-0.fasta
+Ms-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ms-0.fasta
+Stw-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Stw-0.fasta
+Kar-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Kar-1.fasta
+Cvi-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta
+Anz-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
+Sus-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta
+Zal-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Zal-1.fasta
+_MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_10_rep2/output/set_10_rep2.sv.gfa.fa.gz

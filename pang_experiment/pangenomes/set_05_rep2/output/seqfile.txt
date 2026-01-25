@@ -1,0 +1,7 @@
+Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Toufl-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Toufl-1.fasta
+Ms-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ms-0.fasta
+Stw-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Stw-0.fasta
+No-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+Kar-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Kar-1.fasta
+_MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_05_rep2/output/set_05_rep2.sv.gfa.fa.gz

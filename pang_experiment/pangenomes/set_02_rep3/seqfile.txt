@@ -1,0 +1,3 @@
+Col-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+Ct-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Ct-1.fasta
+Rubezhnoe-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Rubezhnoe-1.fasta
