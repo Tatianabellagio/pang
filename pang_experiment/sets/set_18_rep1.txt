@@ -1,4 +1,4 @@
-Col-0
+TAIR10
 Kar-1
 Sus-1
 Zal-1

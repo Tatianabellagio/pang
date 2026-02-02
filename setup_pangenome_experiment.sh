@@ -4,7 +4,7 @@ set -euo pipefail
 #########################################
 # 0. PATHS (NEW BASE)
 #########################################
-BASE="$HOME/scratch/pang/pang_experiment_test"
+BASE="$HOME/scratch/pang/pang_experiment"
 GENOMES="$BASE/genomes"
 SETS="$BASE/sets"
 PANG="$BASE/pangenomes"
@@ -18,7 +18,7 @@ echo "✔ Created directory structure under $BASE"
 # 0b. REFERENCE FASTA (TAIR10)
 #########################################
 REF_NAME="TAIR10"
-REF_SRC="$HOME/scratch/pang/ref_gen/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa"
+REF_SRC="$HOME/scratch/pang/ref_gen/TAIR10.nuclear.Chr.fa"
 
 if [[ ! -s "$REF_SRC" ]]; then
   echo "❌ Reference FASTA not found or empty: $REF_SRC" >&2
@@ -169,12 +169,25 @@ for setname in "${!SIZES[@]}"; do
         fi
 
         # random subset from overlap list (TAIR10 + N overlap)
-        chosen=($(printf "%s\n" "${OVERLAP[@]}" | shuf -n "$size"))
+        # random subset from overlap list: TOTAL size includes TAIR10
+        need_overlap=$(( size - 1 ))
+
+        if [[ "$need_overlap" -lt 0 ]]; then
+            echo "❌ $setname size must be >= 1 (includes TAIR10)" >&2
+            exit 1
+        fi
+        if [[ "$need_overlap" -gt "${#OVERLAP[@]}" ]]; then
+            echo "❌ $setname size=$size too large: need $need_overlap overlap genomes, but only ${#OVERLAP[@]} available" >&2
+            exit 1
+        fi
+
+        chosen=($(printf "%s\n" "${OVERLAP[@]}" | shuf -n "$need_overlap"))
 
         {
             printf "%s\n" "$REF_NAME"
             printf "%s\n" "${chosen[@]}"
         } | dedup_keep_order > "$outfile"
+
     done
 done
 
@@ -214,7 +227,7 @@ chmod +x "$SCRIPTS/build_seqfile.py"
 echo "✔ build_seqfile.py written"
 
 #########################################
-# 7. SBATCH TEMPLATE
+# 7. SBATCH TEMPLATE  (FIXED: TMPDIR + WORKDIR + maxDisk)
 #########################################
 cat > "$SCRIPTS/run_cactus_template.sh" << 'EOF'
 #!/bin/bash
@@ -226,7 +239,16 @@ cat > "$SCRIPTS/run_cactus_template.sh" << 'EOF'
 #SBATCH --output=CAC_NAME.%j.out
 #SBATCH --error=CAC_NAME.%j.err
 
+set -euo pipefail
+
 eval "$(conda shell.bash hook)"
+
+# Prevent cactus/toil/python env issues due to undefined vars
+export PYTHONPATH=${PYTHONPATH:-}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}
+export LIBRARY_PATH=${LIBRARY_PATH:-}
+export CPATH=${CPATH:-}
+
 conda activate pang
 
 cd CAC_DIR
@@ -235,26 +257,30 @@ JOBSTORE="jobstore"
 OUTDIR="output"
 OUTNAME="CAC_NAME"
 
+# If you want a clean rerun, keep this. If you want resume, comment it out.
 rm -rf "$JOBSTORE"
 
+# Use nobackup scratch for Toil + temp (avoid /tmp size limits)
+export TMPDIR="/carnegie/nobackup/scratch/tbellagio/pang/tmp/${OUTNAME}"
+WORKDIR="/carnegie/nobackup/scratch/tbellagio/pang/toil_work/${OUTNAME}"
+mkdir -p "$TMPDIR" "$WORKDIR"
+
 cactus-pangenome \
-    "$JOBSTORE" \
-    seqfile.txt \
-    --outDir "$OUTDIR" \
-    --outName "$OUTNAME" \
-    --reference TAIR10 \
-    --haplo \
-    --vcf \
-    --gfa \
-    --gbz \
-    --giraffe \
-    --maxLen 10000 \
-    --mgCores 8 \
-    --mapCores 8 \
-    --consCores 16 \
-    --indexCores 16
+  "$JOBSTORE" \
+  seqfile.txt \
+  --outDir "$OUTDIR" \
+  --outName "$OUTNAME" \
+  --reference TAIR10 \
+  --haplo --vcf --gfa --gbz --giraffe \
+  --maxLen 10000 \
+  --mgCores 8 --mapCores 8 --consCores 16 --indexCores 16 \
+  --workDir "$WORKDIR" \
+  --maxDisk 200G
 
 EOF
+
+chmod +x "$SCRIPTS/run_cactus_template.sh"
+echo "✔ run_cactus_template.sh created (with TMPDIR/WORKDIR/maxDisk)"
 
 echo "✔ run_cactus_template.sh created"
 

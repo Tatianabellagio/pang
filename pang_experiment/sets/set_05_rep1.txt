@@ -1,6 +1,5 @@
-Col-0
-Stw-0
-Mh-0
-Zal-1
+TAIR10
 Altai-5
-No-0
+Oy-0
+Qar-8a
+St-0

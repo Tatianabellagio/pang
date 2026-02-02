@@ -1,7 +1,6 @@
-Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
-Toufl-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Toufl-1.fasta
-Sus-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta
-Stw-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Stw-0.fasta
+TAIR10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Altai-5	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
+Dog-4	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
 No-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
-Cvi-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta
+Anz-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
 _MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_05_rep3/output/set_05_rep3.sv.gfa.fa.gz

@@ -1,4 +1,3 @@
-Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
-Ct-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ct-1.fasta
-Rubezhnoe-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Rubezhnoe-1.fasta
+TAIR10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Sus-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta
 _MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_02_rep3/output/set_02_rep3.sv.gfa.fa.gz

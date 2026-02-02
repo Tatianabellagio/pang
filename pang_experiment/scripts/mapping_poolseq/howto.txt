@@ -1,0 +1,7 @@
+## rerun 
+bash generate_mapping_jobs.sh > submit_mapping.sh
+## then
+bash submit_mapping.sh
+## trying to find reminder mapper 
+bash make_remaining_submit.sh submit_mapping.sh submit_mapping_remaining.sh
+bash submit_mapping_remaining.sh

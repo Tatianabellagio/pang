@@ -1,8 +1,9 @@
+TAIR10
 Abd-0
 Altai-5
 Anz-0
-Are-10
 Are-1
+Are-10
 Are-2
 Are-6
 Bay-0

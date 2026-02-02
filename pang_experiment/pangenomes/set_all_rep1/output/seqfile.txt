@@ -1,9 +1,9 @@
-Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
+TAIR10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
 Abd-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Abd-0.fasta
 Altai-5	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
 Anz-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
-Are-10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Are-10.fasta
 Are-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Are-1.fasta
+Are-10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Are-10.fasta
 Are-2	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Are-2.fasta
 Are-6	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Are-6.fasta
 Bay-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Bay-0.fasta
@@ -13,6 +13,7 @@ Bur-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Bur-0.fasta
 Can-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Can-0.fasta
 Cant-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Cant-1.fasta
 Co-4	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Co-4.fasta
+Col-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Col-0.fasta
 Ct-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ct-1.fasta
 Cvi-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta
 Db-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Db-1.fasta
