@@ -31,7 +31,7 @@ echo "set -euo pipefail" >> "$SUB_TOP"
 chmod +x "$SUB_ALL" "$SUB_TOP"
 
 # Resources
-TIME_LIMIT="01:00:00"
+TIME_LIMIT="02:00:00"
 CPUS="16"
 MEM="96G"
 REFPREFIX="TAIR10"

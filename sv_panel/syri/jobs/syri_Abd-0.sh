@@ -31,7 +31,7 @@ REF=/home/tbellagio/scratch/pang/sv_panel/ref/TAIR10.Chr.fa
 ASM=/home/tbellagio/scratch/pang/sv_panel/assemblies_clean/Abd-0.fasta
 
 # This should match where your align job wrote it:
-BAM=/home/tbellagio/scratch/pang/sv_panel/alignment/alignments/Abd-0.Chr1-5/Abd-0.tair10.bam
+BAM=/home/tbellagio/scratch/pang/sv_panel/alignment/alignments/Abd-0/Abd-0.tair10.bam
 
 # -----------------------------
 # Output layout

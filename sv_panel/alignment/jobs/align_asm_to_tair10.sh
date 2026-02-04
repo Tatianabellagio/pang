@@ -52,6 +52,8 @@ fi
 minimap2 -ax asm5 --eqx -t "$THREADS" "$REF" "$ASM_STREAM" \
   | samtools sort -@ "$THREADS" -O BAM -o "$BAM" -
 
+samtools index -@ "$THREADS" "$BAM"
+
 END_TS=$(date +%s)
 echo "✅ END:   $(date)"
 echo "⏱ TOTAL: $((END_TS - START_TS)) seconds"

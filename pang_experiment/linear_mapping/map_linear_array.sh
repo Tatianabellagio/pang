@@ -22,7 +22,7 @@ THREADS="${SLURM_CPUS_PER_TASK:-16}"
 REF=~/scratch/pang/ref_gen/TAIR10.nuclear.Chr.fa
 
 READ_DIR=~/scratch/pang/grenenet_reads/seed_mix
-OUTBASE=~/scratch/pang/pang_experiment_ref/linear_mapping/results
+OUTBASE=~/scratch/pang/pang_experiment/linear_mapping/results
 # ---------------------------------
 
 mkdir -p logs "$OUTBASE"
