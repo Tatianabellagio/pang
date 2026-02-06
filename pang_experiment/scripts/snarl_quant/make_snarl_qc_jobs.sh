@@ -12,7 +12,8 @@ mkdir -p "$JOBS_DIR" "$LOG_DIR"
 MANIFEST="$JOBS_DIR/snarl_qc_manifest.tsv"
 SUBMIT="$JOBS_DIR/submit_all_snarl_qc.sh"
 
-echo -e "set\toutput_dir\ttop_vcf\tall_vcf\tsbatch" > "$MANIFEST"
+# add filter column
+echo -e "set\toutput_dir\top_vcf\tall_vcf\tfilter_vcf\tsbatch" > "$MANIFEST"
 echo "#!/usr/bin/env bash" > "$SUBMIT"
 echo "set -euo pipefail" >> "$SUBMIT"
 
@@ -23,8 +24,14 @@ for outdir in "$ROOT"/set_*/output; do
   top="$outdir/${setname}.deconstruct.top.vcf.gz"
   all="$outdir/${setname}.deconstruct.all_snarls.vcf.gz"
 
-  if [[ ! -s "$top" || ! -s "$all" ]]; then
-    echo "Skipping $setname (missing VCFs)"
+  # cactus/minigraph "filtered" (vcfbub) output
+  filter="$outdir/${setname}.vcf.gz"
+
+  if [[ ! -s "$top" || ! -s "$all" || ! -s "$filter" ]]; then
+    echo "Skipping $setname (missing VCFs: top/all/filter)"
+    echo "  top:    $top"
+    echo "  all:    $all"
+    echo "  filter: $filter"
     continue
   fi
 
@@ -61,7 +68,17 @@ echo "ENV: \$CONDA_DEFAULT_ENV"
 echo "bcftools: \$(command -v bcftools || echo MISSING)"
 echo "tabix:    \$(command -v tabix || echo MISSING)"
 
-bash "$WORKER" "$outdir" "$setname"
+echo "TOP:    $top"
+echo "ALL:    $all"
+echo "FILTER: $filter"
+
+# optional: index if missing (helps bcftools index -n etc)
+if [[ ! -s "$top.tbi" ]]; then tabix -f -p vcf "$top"; fi
+if [[ ! -s "$all.tbi" ]]; then tabix -f -p vcf "$all"; fi
+if [[ ! -s "$filter.tbi" ]]; then tabix -f -p vcf "$filter"; fi
+
+# pass filter as 3rd VCF argument (worker must accept it)
+bash "$WORKER" "$outdir" "$setname" "$top" "$all" "$filter"
 
 END_TS=\$(date +%s)
 echo "✅ END:   \$(date)"
@@ -69,7 +86,7 @@ echo "⏱ TOTAL: \$((END_TS - START_TS)) seconds"
 EOF
 
   chmod +x "$sb"
-  echo -e "${setname}\t${outdir}\t${top}\t${all}\t${sb}" >> "$MANIFEST"
+  echo -e "${setname}\t${outdir}\t${top}\t${all}\t${filter}\t${sb}" >> "$MANIFEST"
   echo "sbatch \"$sb\"" >> "$SUBMIT"
 done
 

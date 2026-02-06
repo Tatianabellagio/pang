@@ -8,12 +8,7 @@
 
 set -euo pipefail
 
-# =========================
-# Load environment
-# =========================
 eval "$(conda shell.bash hook)"
-
-# 🔑 FIX: ensure PYTHONPATH is defined (prevents cactus env crash)
 export PYTHONPATH=${PYTHONPATH:-}
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}
 export LIBRARY_PATH=${LIBRARY_PATH:-}
@@ -21,18 +16,13 @@ export CPATH=${CPATH:-}
 
 conda activate syri_env
 
-# -----------------------------
-# Inputs (edit per job)
-# -----------------------------
-REF=/home/tbellagio/scratch/pang/sv_panel/ref/TAIR10.Chr.fa
-ASM=/home/tbellagio/scratch/pang/pang_69/upload_genome/Abd-0.fasta
+START_TS=$(date +%s)
+echo "▶ START: $(date)"
 
-# This should match where your align job wrote it:
+REF=/home/tbellagio/scratch/pang/sv_panel/ref/TAIR10.Chr.fa
+ASM=/home/tbellagio/scratch/pang/sv_panel/assemblies_clean/Abd-0.fasta
 BAM=/home/tbellagio/scratch/pang/sv_panel/alignment/alignments/Abd-0/Abd-0.tair10.bam
 
-# -----------------------------
-# Output layout
-# -----------------------------
 OUTROOT=/home/tbellagio/scratch/pang/sv_panel/syri
 mkdir -p "$OUTROOT/results" "$OUTROOT/logs"
 
@@ -46,18 +36,16 @@ mkdir -p "$SYRIDIR"
 
 THREADS=${SLURM_CPUS_PER_TASK:-8}
 
-# -----------------------------
-# Ensure inputs exist
-# -----------------------------
 [[ -s "$REF" ]] || { echo "Missing REF: $REF" >&2; exit 1; }
 [[ -s "$ASM" ]] || { echo "Missing ASM: $ASM" >&2; exit 1; }
 [[ -s "$BAM" ]] || { echo "Missing BAM: $BAM" >&2; exit 1; }
-[[ -s "${BAM}.bai" ]] || { echo "Missing BAM index: ${BAM}.bai" >&2; exit 1; }
 
-# -----------------------------
-# Syri: query FASTA must be readable
-# If gz, unpack once into SYRIDIR
-# -----------------------------
+# Ensure BAM index exists (create if missing)
+if [[ ! -s "${BAM}.bai" ]]; then
+  echo "⚠ Missing BAM index; creating: ${BAM}.bai"
+  samtools index -@ "$THREADS" "$BAM"
+fi
+
 if [[ "$ASM" == *.gz ]]; then
   ASM_FOR_SYRI="$SYRIDIR/${ASMNAME}.fa"
   if [[ ! -s "$ASM_FOR_SYRI" ]]; then
@@ -67,9 +55,6 @@ else
   ASM_FOR_SYRI="$ASM"
 fi
 
-# -----------------------------
-# Run syri (BAM input)
-# -----------------------------
 syri -c "$BAM" \
      -r "$REF" \
      -q "$ASM_FOR_SYRI" \
@@ -78,4 +63,7 @@ syri -c "$BAM" \
      --prefix "${ASMNAME}.tair10." \
      --nc "$THREADS"
 
+END_TS=$(date +%s)
+echo "✅ END:   $(date)"
+echo "⏱ TOTAL: $((END_TS - START_TS)) seconds"
 echo "DONE: $SYRIDIR"

@@ -2,12 +2,18 @@
 set -euo pipefail
 
 # Usage:
-#   snarl_qc_one_set.sh BASEDIR PREFIX
+#   snarl_qc_one_set.sh BASEDIR PREFIX [TOP_VCF] [ALL_VCF] [FILTER_VCF]
 # Example:
 #   snarl_qc_one_set.sh /.../pangenomes/set_02_rep1/output set_02_rep1
+#   snarl_qc_one_set.sh /.../output set_02_rep1 top.vcf.gz all.vcf.gz filter.vcf.gz
 
 BASEDIR="${1:?need BASEDIR}"
 PREFIX="${2:?need PREFIX (e.g. set_02_rep1)}"
+
+# Allow overriding inputs from job script; otherwise use defaults
+TOP_VCF="${3:-$BASEDIR/${PREFIX}.deconstruct.top.vcf.gz}"
+ALL_VCF="${4:-$BASEDIR/${PREFIX}.deconstruct.all_snarls.vcf.gz}"
+FILTER_VCF="${5:-$BASEDIR/${PREFIX}.vcf.gz}"   # cactus/minigraph "filtered" vcfbub output
 
 # Optional: activate conda env if not already active
 if [[ "${CONDA_DEFAULT_ENV:-}" != "pang" ]]; then
@@ -23,10 +29,10 @@ if [[ "${CONDA_DEFAULT_ENV:-}" != "pang" ]]; then
   fi
 fi
 
-TOP_VCF="$BASEDIR/${PREFIX}.deconstruct.top.vcf.gz"
-ALL_VCF="$BASEDIR/${PREFIX}.deconstruct.all_snarls.vcf.gz"
+# Build list of VCFs to process
+VCFS=("$TOP_VCF" "$ALL_VCF" "$FILTER_VCF")
 
-for f in "$TOP_VCF" "$ALL_VCF"; do
+for f in "${VCFS[@]}"; do
   if [[ ! -s "$f" ]]; then
     echo "ERROR: missing or empty: $f" >&2
     exit 1
@@ -41,6 +47,9 @@ echo "PREFIX:  $PREFIX"
 echo "ENV:     ${CONDA_DEFAULT_ENV:-none}"
 echo "bcftools: $(command -v bcftools || echo MISSING)"
 echo "tabix:    $(command -v tabix || echo MISSING)"
+echo "TOP_VCF:    $TOP_VCF"
+echo "ALL_VCF:    $ALL_VCF"
+echo "FILTER_VCF: $FILTER_VCF"
 
 ########################################
 # 1) Allelicity summary
@@ -48,7 +57,7 @@ echo "tabix:    $(command -v tabix || echo MISSING)"
 allelicity_out="$BASEDIR/qc/qc_allelicity_summary.${PREFIX}.tsv"
 echo -e "vcf\ttotal_records\tbiallelic_records\tmultiallelic_records\tmax_ALTs\ttotal_ALT_alleles" > "$allelicity_out"
 
-for vcf_path in "$TOP_VCF" "$ALL_VCF"; do
+for vcf_path in "${VCFS[@]}"; do
   vcf_name="$(basename "$vcf_path")"
 
   stats=$(bcftools query -f '%ALT\n' "$vcf_path" \
@@ -67,10 +76,11 @@ echo "Wrote: $allelicity_out"
 ########################################
 # 2) Split to biallelic
 ########################################
-for vcf_path in "$TOP_VCF" "$ALL_VCF"; do
+for vcf_path in "${VCFS[@]}"; do
   vcf_name="$(basename "$vcf_path")"
   out_bi="$BASEDIR/qc/${vcf_name%.vcf.gz}.biallelic.norm.vcf.gz"
 
+  # keep your original behavior; this is actually split + normalize representation
   bcftools norm -m -any -Oz -o "$out_bi" "$vcf_path"
   tabix -f -p vcf "$out_bi"
 
@@ -80,11 +90,9 @@ done
 ########################################
 # 3) Per-record descriptions (on biallelic VCFs)
 ########################################
-for vcf_name in \
-  "${PREFIX}.deconstruct.top.vcf.gz" \
-  "${PREFIX}.deconstruct.all_snarls.vcf.gz"
-do
-  base="${vcf_name%.vcf.gz}"
+for vcf_path in "${VCFS[@]}"; do
+  vcf_name="$(basename "$vcf_path")"
+  base="${vcf_name%.vcf.gz}"   # works regardless of naming
   vcf_bi="$BASEDIR/qc/${base}.biallelic.norm.vcf.gz"
   out_sizes="$BASEDIR/qc/qc_sizes_biallelic.${base}.tsv"
 
