@@ -33,17 +33,19 @@ export CPATH=${CPATH:-}
 
 conda activate freqk_build
 
-BASE=/home/tbellagio/scratch/pang/test_freqk/seedmix
+BASE=/home/tbellagio/scratch/pang/test_freqk/pilot_site4
+
 mkdir -p "$BASE/logs" "$BASE/results"
 cd "$BASE"
 
 FREQK=/home/tbellagio/scratch/pang/test_freqk/freqk/target/release/freqk
-VCF=$BASE/greneNet_final_v1.1.recode.vcf.gz
-FASTA=/home/tbellagio/scratch/pang/ref_xing/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
+VCF=${BASE}/set_05_rep1.vcf.gz
+FASTA=/home/tbellagio/scratch/pang/ref_gen/TAIR10.nuclear.Chr.fa
+
 #/home/tbellagio/scratch/pang/ref_gen/TAIR10.nuclear.Chr.fa
 
-K=21
-INDEX=$BASE/greneNet_v1.1.TAIR10.k${K}.freqk.index
+K=31
+INDEX=${BASE}/set_05_rep1.TAIR10.k${K}.freqk.index
 
 READSDIR=/home/tbellagio/scratch/pang/grenenet_reads/seed_mix
 

@@ -39,7 +39,7 @@ VCF=$BASE/greneNet_final_v1.1.recode.vcf.gz
 FASTA=/home/tbellagio/scratch/pang/ref_xing/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
 #/home/tbellagio/scratch/pang/ref_gen/TAIR10.nuclear.Chr.fa
 
-K=31
+K=21
 OUT=$BASE/greneNet_v1.1.TAIR10.k${K}.freqk.index
 
 # guards

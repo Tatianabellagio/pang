@@ -1,6 +1,8 @@
 ## variants in vcf 
 3235480
 
+1,753,028 
+
 ## true frequencies (?) 
 3235480
 average_seedmix_p0.txt
