@@ -1,0 +1,59 @@
+File non-empty + read counts match
+
+for d in /home/tbellagio/scratch/pang/visor_freqk/data/reads/del_*; do
+  echo "== $(basename "$d") =="
+  ls -lh "$d"/r1.fq "$d"/r2.fq "$d"/sim.srt.bam 2>/dev/null
+  echo -n "R1 reads: "; awk 'END{print NR/4}' "$d"/r1.fq
+  echo -n "R2 reads: "; awk 'END{print NR/4}' "$d"/r2.fq
+  echo
+done
+
+2) FastQ format sanity (first record)
+
+for d in /home/tbellagio/scratch/pang/visor_freqk/data/reads/del_*; do
+  echo "== $(basename "$d") =="
+  head -n 4 "$d"/r1.fq
+  echo
+done
+
+
+coverage check 
+
+for d in /home/tbellagio/scratch/pang/visor_freqk/data/reads/del_*; do
+  echo "== $(basename "$d") =="
+  samtools depth -a "$d"/sim.srt.bam | awk '{sum+=$3; n+=1} END{print "Mean depth:", sum/n}'
+done
+
+
+
+
+# 1) Verify haplotype has the deletion
+# Reference length vs haplotype length (should differ by 1000bp)
+grep "Chr1" /home/tbellagio/scratch/pang/visor_freqk/data/reference/Chr1.fa.fai
+grep "Chr1" /home/tbellagio/scratch/pang/visor_freqk/data/haplotypes/_clone_DEL_1kb/h1.fa.fai
+
+
+
+samtools depth -r Chr1:10000001-10001000 \
+  /home/tbellagio/scratch/pang/visor_freqk/data/reads/freq_1kb_050/sim.srt.bam | \
+  awk '{sum+=$3; n++} END{print "Mean depth inside deletion:", sum/n}'
+
+samtools depth -r Chr1:9990000-10000000 \
+  /home/tbellagio/scratch/pang/visor_freqk/data/reads/freq_1kb_050/sim.srt.bam | \
+  awk '{sum+=$3; n++} END{print "Mean depth outside deletion:", sum/n}'
+Mean depth inside deletion: 23.692
+Mean depth outside deletion: 48.4875
+
+The real answer is simpler — look at the raw k-mer counts in the tsv, those k-mers come from both strands of the deleted sequence. So each unique position generates 2 canonical k-mers (one per strand), effectively halving the count per k-mer: 24x / 2 ≈ 12. Does that match your intuition?
+
+
+(pang) tbellagio@login1:~/scratch/pang/visor_freqk/results$ # Get mean coverage of REF k-mers (inside deletion)
+awk '{sum+=$2; n++} END{print "Mean REF kmer count:", sum/n}' \
+  /home/tbellagio/scratch/pang/visor_freqk/results/freq_1kb_050.raw_kmer_counts.k31.tsv
+
+# Get mean coverage at a control region (outside deletion)
+samtools depth -r Chr1:9900000-9999000 \
+  /home/tbellagio/scratch/pang/visor_freqk/data/reads/freq_1kb_050/sim.srt.bam | \
+  awk '{sum+=$3; n++} END{print "Mean control depth:", sum/n}'
+Mean REF kmer count: 12.0339
+Mean control depth: 49.2147
