@@ -8,13 +8,16 @@
 # =============================================================================
 # 05_make_vcf.sh
 # Purpose: Create a sequence-resolved VCF for the 1kb deletion at Chr1:10000000
-# REF = anchor base + deleted sequence
+# REF = anchor base + deleted sequence (anchor at POS, deleted bases POS+1 to DEL_END)
 # ALT = anchor base only
 # Output: data/vcf/del_1kb.vcf.gz (bgzipped + tabix indexed)
 #
-# NOTE: freqk's index.rs does `pos = record.pos() - 1` where record.pos() is
-# already 0-based (rust-htslib convention). This is an off-by-one bug in freqk.
-# Workaround: shift POS +1 in the VCF so freqk lands on the correct position.
+# Coordinates:
+#   BED 0-based:     Chr1 10000000 10001000
+#   VISOR deletes:   1-based 10000001-10001000, sequence resumes at 10001001
+#   VCF anchor:      POS=10000000 (last base before deletion, 1-based)
+#   REF:             Chr1:10000000-10001000 (anchor + deleted bases = 1001bp)
+#   ALT:             anchor base only (C)
 # =============================================================================
 set -euo pipefail
 source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
@@ -24,16 +27,9 @@ VCF_DIR=/home/tbellagio/scratch/pang/visor_freqk/data/vcf
 mkdir -p "${VCF_DIR}" logs
 
 CHROM="Chr1"
-# BED 0-based: Chr1 10000000 10001000
-# VISOR deletes 1-based: 10000001-10001000, sequence resumes at 10001001
-# freqk off-by-one workaround: POS shifted +1 (10000001 instead of 10000000)
-
-POS=10000001
-DEL_END=10001000
+POS=10000000       # anchor base (last base before deletion, 1-based)
+DEL_END=10001000   # last deleted base (1-based)
 SVLEN=1000
-
-REF_SEQ=$(samtools faidx "${REF}" "${CHROM}:${POS}-${DEL_END}" | grep -v "^>" | tr -d '\n')
-ALT_SEQ="C"   # hardcoded: last base before deletion (ref pos 10000000)
 
 echo "[$(date)] Extracting REF sequence at ${CHROM}:${POS}-${DEL_END}"
 REF_SEQ=$(samtools faidx "${REF}" "${CHROM}:${POS}-${DEL_END}" | grep -v "^>" | tr -d '\n')
@@ -55,9 +51,8 @@ VCFEOF
 echo -e "${CHROM}\t${POS}\t.\t${REF_SEQ}\t${ALT_SEQ}\t1000\tPASS\tSVTYPE=DEL;SVLEN=-${SVLEN};END=${DEL_END}" >> "${VCF_RAW}"
 
 echo "[$(date)] Sorting, bgzipping and indexing VCF"
-bcftools sort "${VCF_RAW}" -o "${VCF_RAW}.sorted.vcf"
-bgzip -f "${VCF_RAW}.sorted.vcf" -o "${VCF_DIR}/del_1kb.vcf.gz"
-tabix -p vcf "${VCF_DIR}/del_1kb.vcf.gz"
+bgzip -f "${VCF_RAW}"
+tabix "${VCF_DIR}/del_1kb.vcf.gz"
 rm -f "${VCF_RAW}"
 
 echo "[$(date)] Done. VCF: ${VCF_DIR}/del_1kb.vcf.gz"

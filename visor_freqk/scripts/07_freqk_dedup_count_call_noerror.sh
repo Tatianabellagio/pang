@@ -14,17 +14,12 @@
 # Expected result: freqk should estimate ~0.50 allele frequency
 # =============================================================================
 set -euo pipefail
-source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
-
-ts() { date +"%Y-%m-%d %H:%M:%S"; }
-step() {
-  local name="$1"; shift
-  echo
-  echo "===== [$name] START $(ts) ====="
-  local start=$SECONDS
-  "$@"
-  echo "===== [$name] END $(ts) | duration=$((SECONDS - start))s ====="
-}
+eval "$(conda shell.bash hook)"
+export PYTHONPATH=${PYTHONPATH:-}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}
+export LIBRARY_PATH=${LIBRARY_PATH:-}
+export CPATH=${CPATH:-}
+conda activate freqk_build
 
 FREQK=/home/tbellagio/scratch/pang/test_freqk/freqk/target/release/freqk
 WORK=/home/tbellagio/scratch/pang/visor_freqk
@@ -44,6 +39,15 @@ READS_COMBINED=${READS_DIR}/all.fq
 COUNTS_BY_ALLELE=${RESULTS_DIR}/freq_1kb_050_noerr.counts_by_allele.k${K}.tsv
 RAW_COUNTS=${RESULTS_DIR}/freq_1kb_050_noerr.raw_kmer_counts.k${K}.tsv
 AF_OUT=${RESULTS_DIR}/freq_1kb_050_noerr.allele_frequencies.k${K}.tsv
+
+step() {
+  local label="$1"
+  shift
+  echo
+  echo "[$(date)] === $label ==="
+  echo "+ $*"
+  "$@"
+}
 
 # Combine r1 + r2 into single fastq
 echo "[$(date)] Combining r1.fq + r2.fq -> all.fq"
