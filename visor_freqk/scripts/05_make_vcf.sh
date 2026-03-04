@@ -12,12 +12,12 @@
 # ALT = anchor base only
 # Output: data/vcf/del_1kb.vcf.gz (bgzipped + tabix indexed)
 #
-# Coordinates:
+# Coordinates (aligned to VISOR haplotype junction):
 #   BED 0-based:     Chr1 10000000 10001000
 #   VISOR deletes:   1-based 10000001-10001000, sequence resumes at 10001001
-#   VCF anchor:      POS=10000000 (last base before deletion, 1-based)
-#   REF:             Chr1:10000000-10001000 (anchor + deleted bases = 1001bp)
-#   ALT:             anchor base only (C)
+#   VCF anchor:      POS=9999999 (last base before deletion, 1-based)
+#   REF:             Chr1:9999999-10001000 (anchor + deleted bases)
+#   ALT:             anchor base only (T)
 # =============================================================================
 set -euo pipefail
 source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
@@ -27,9 +27,9 @@ VCF_DIR=/home/tbellagio/scratch/pang/visor_freqk/data/vcf
 mkdir -p "${VCF_DIR}" logs
 
 CHROM="Chr1"
-POS=10000000       # anchor base (last base before deletion, 1-based)
+POS=9999999        # anchor base (last base before deletion, 1-based)
 DEL_END=10001000   # last deleted base (1-based)
-SVLEN=1000
+SVLEN=1001
 
 echo "[$(date)] Extracting REF sequence at ${CHROM}:${POS}-${DEL_END}"
 REF_SEQ=$(samtools faidx "${REF}" "${CHROM}:${POS}-${DEL_END}" | grep -v "^>" | tr -d '\n')
