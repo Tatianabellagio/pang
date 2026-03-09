@@ -166,8 +166,24 @@ diff -u /tmp/ref_from_vcf.txt /tmp/ref_from_fasta.txt || echo "REF mismatch!"
 
 
 
-
+correct SHORT_MOTIF
+TTGGACTCCTACTAAAGAGATAA
+TTGGACTCCT ACTAAAGAGATAA
 freqk 
-TTGGACTCCT ACTAAAGAGATAACTT
-           ACTAAAGAGATAACTTCTATTATTGTTGAGT 
-TTGGACTCCT CACTAAAGAGATAACTT
+TTGGACTCCT C ACTAAAGAGATAACTT
+TTGGACTCCTCACTAAAGAGATAACTT
+
+new freqk
+TTGGACTCCT A ACTAAAGA
+
+referecne 
+TTGGACTCCT CTGCACGAGTCCGTTGCCC
+TTGGACTCCTCTGCACGAGTCCGTTGCCC
+
+
+
+# In the freqk index
+grep 'TTGGACTCCTACTAAAGAGATAA' results/del_1kb.k31.freqk.var_index | head
+
+# Also check for the old wrong one, just to be sure it’s gone
+grep 'TTGGACTCCTCACTAAAGAGATAACTT' results/del_1kb.k31.freqk.var_index | head

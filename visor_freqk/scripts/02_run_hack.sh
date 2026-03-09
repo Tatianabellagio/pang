@@ -7,50 +7,61 @@
 #SBATCH --mem=8G
 # =============================================================================
 # 02_run_hack.sh
-# Purpose: Run VISOR HACk to inject homozygous deletions into Chr1
-# Experiment: SV size benchmark (fixed freq=0.50, coverage=50x, type=deletion)
-# Both HAP1 and HAP2 carry the deletion (homozygous, inbred Arabidopsis lines)
-# Output: data/haplotypes/del_<size>/HAP1/ and HAP2/
+# Purpose: Run VISOR HACk to inject homozygous SVs into Chr1
+#          (deletions or insertions, depending on config SV_TYPE)
+#          Parameters come from a config file (default: config_sv_deletions.sh)
+# Output (DEL): ${HAPS}/del_<size>/HAP1/ and HAP2/
+# Output (INS): ${HAPS}/ins_<size>/HAP1/ and HAP2/
 # =============================================================================
 set -euo pipefail
-source $(mamba info --base)/etc/profile.d/conda.sh && conda activate pang
+export PYTHONPATH="${PYTHONPATH:-}"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
 
-REF=/home/tbellagio/scratch/pang/visor_freqk/data/reference/Chr1.fa
-BEDS=/home/tbellagio/scratch/pang/visor_freqk/data/beds
-HAPS=/home/tbellagio/scratch/pang/visor_freqk/data/haplotypes
+CONFIG_FILE=${1:-"$(dirname "$0")/config_sv_deletions.sh"}
+source "${CONFIG_FILE}"
 
-mkdir -p logs
+mkdir -p logs "${HAPS}"
 
-declare -A SIZES=(
-    ["100bp"]="hack_del_100bp.bed"
-    ["500bp"]="hack_del_500bp.bed"
-    ["1kb"]="hack_del_1kb.bed"
-    ["5kb"]="hack_del_5kb.bed"
-    ["10kb"]="hack_del_10kb.bed"
-)
+case "${SV_TYPE}" in
+  "DEL")
+    for SIZE in "${!DEL_SIZES[@]}"; do
+        LEN=${DEL_SIZES[$SIZE]}
+        BED=${BEDS}/hack_del_${SIZE}.bed
+        HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
+        HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
 
-for SIZE in "${!SIZES[@]}"; do
-    BED=${BEDS}/${SIZES[$SIZE]}
-    HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
-    HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
+        mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
-    mkdir -p ${HAP1_OUT} ${HAP2_OUT}
+        echo "[$(date)] Running VISOR HACk (DEL) for size: ${SIZE} (len=${LEN})"
 
-    echo "[$(date)] Running VISOR HACk for deletion size: ${SIZE}"
+        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
 
-    # HAP1
-    VISOR HACk \
-        -g ${REF} \
-        -b ${BED} \
-        -o ${HAP1_OUT}
+        echo "[$(date)] Done: del_${SIZE}"
+    done
+    echo "[$(date)] All deletions processed. Haplotypes in ${HAPS}"
+    ;;
+  "INS")
+    for SIZE in "${!INS_SIZES[@]}"; do
+        LEN=${INS_SIZES[$SIZE]}
+        BED=${BEDS}/hack_ins_${SIZE}.bed
+        HAP1_OUT=${HAPS}/ins_${SIZE}/HAP1
+        HAP2_OUT=${HAPS}/ins_${SIZE}/HAP2
 
-    # HAP2 (same BED — homozygous)
-    VISOR HACk \
-        -g ${REF} \
-        -b ${BED} \
-        -o ${HAP2_OUT}
+        mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
-    echo "[$(date)] Done: del_${SIZE}"
-done
+        echo "[$(date)] Running VISOR HACk (INS) for size: ${SIZE} (len=${LEN})"
 
-echo "[$(date)] All deletions processed. Haplotypes in ${HAPS}"c
+        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
+
+        echo "[$(date)] Done: ins_${SIZE}"
+    done
+    echo "[$(date)] All insertions processed. Haplotypes in ${HAPS}"
+    ;;
+  *)
+    echo "02_run_hack.sh: unsupported SV_TYPE=${SV_TYPE} (expected DEL or INS)" >&2
+    exit 1
+    ;;
+esac
