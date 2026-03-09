@@ -56,8 +56,7 @@ case "${SV_TYPE}" in
           --clonefraction "$(awk -v f="${FREQ}" 'BEGIN{print f*100}')" "$(awk -v f="${FREQ}" 'BEGIN{print (1-f)*100}')" \
           --error "${ERROR_RATE}" \
           --fastq \
-          --threads 8 \
-          2>> "${OUT}/visor_shorts.stderr" || true
+          --threads 8 || true
 
       echo "[$(date)] Done. Output in ${OUT}"
       ls -lh "${OUT}"
