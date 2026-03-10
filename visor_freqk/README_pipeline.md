@@ -9,13 +9,13 @@ Choose one config per run:
 - Deletions: `scripts/config_sv_deletions.sh`
   - Paths: `WORK`, `REF`, `HAPS`, `READS`, `BEDS`, `VCF_DIR`, `RESULTS`
   - SV design: `SV_TYPE="DEL"`, `CHROM`, `SV_START_0`, `ANCHOR_POS`, `DEL_SIZES`
-  - Pool‑seq: `FREQ`, `COVERAGE`, `ERROR_RATE`, `WT_CLONE`
+  - Pool‑seq: `FREQ`, `COVERAGE`, `ERROR_RATE`, `WT_CLONE` (step 02 creates `${HAPS}/_clone_WT` so 03 has a WT clone)
   - freqk: `K`, `FREQK`
 
 - Insertions: `scripts/config_sv_insertions.sh`
   - Paths: `WORK`, `REF`, `HAPS`, `READS`, `BEDS`, `VCF_DIR`, `RESULTS`
   - SV design: `SV_TYPE="INS"`, `CHROM`, `SV_START_0`, `INS_SIZES`
-  - Pool‑seq: `FREQ`, `COVERAGE`, `ERROR_RATE` (and optionally `WT_CLONE` if you use a separate WT haplotype)
+  - Pool‑seq: `FREQ`, `COVERAGE`, `ERROR_RATE`, `WT_CLONE` (step 02 creates `${HAPS}/_clone_WT` for 03)
   - freqk: `K`, `FREQK`
 
 Adjust these as needed (e.g. change `FREQ`, `COVERAGE`, `ERROR_RATE`, or add/remove sizes in `DEL_SIZES` / `INS_SIZES`).
@@ -27,6 +27,8 @@ In all commands below, pass the config explicitly as the second argument.
 ```bash
 cd /home/tbellagio/scratch/pang/visor_freqk   # or your clone path
 sbatch scripts/01_make_beds.sh scripts/config_sv_deletions.sh   # or config_sv_insertions.sh
+sbatch scripts/01_make_beds.sh scripts/config_sv_insertions.sh   # or config_sv_insertions.sh
+
 ```
 
 Depending on `SV_TYPE` in the config:
@@ -38,17 +40,22 @@ Depending on `SV_TYPE` in the config:
 
 ```bash
 sbatch scripts/02_run_hack.sh scripts/config_sv_deletions.sh   # or config_sv_insertions.sh
+sbatch scripts/02_run_hack.sh scripts/config_sv_insertions.sh
 ```
 
-This uses the BEDs from step 01 and writes haplotypes to:
+This uses the BEDs from step 01 and:
 
-- Deletions: `${HAPS}/del_<SIZE>/HAP1` and `HAP2`
-- Insertions: `${HAPS}/ins_<SIZE>/HAP1` and `HAP2`
+- **Creates the WT clone** at `${HAPS}/_clone_WT` (copy of the reference, no variants). Step 03 needs this for pool-seq (WT + variant clones).
+- Writes variant haplotypes to:
+  - Deletions: `${HAPS}/del_<SIZE>/HAP1` and `HAP2`
+  - Insertions: `${HAPS}/ins_<SIZE>/HAP1` and `HAP2`
 
 ### 3. Simulate pool‑seq reads (03)
 
 ```bash
 sbatch scripts/03_run_shorts.sh scripts/config_sv_deletions.sh   # or config_sv_insertions.sh
+sbatch scripts/03_run_shorts.sh scripts/config_sv_insertions.sh   # or config_sv_insertions.sh
+
 ```
 
 Reads are simulated with:
@@ -71,6 +78,7 @@ For a new experiment (e.g. different `FREQ` or `ERROR_RATE`), edit the config an
 
 ```bash
 sbatch scripts/04_make_vcf.sh scripts/config_sv_deletions.sh   # or config_sv_insertions.sh
+sbatch scripts/04_make_vcf.sh scripts/config_sv_insertions.sh
 ```
 
 This creates VCFs for all SV sizes:
@@ -97,6 +105,7 @@ This creates VCFs for all SV sizes:
 
 ```bash
 sbatch scripts/05_freqk.sh scripts/config_sv_deletions.sh   # or config_sv_insertions.sh
+sbatch scripts/05_freqk.sh scripts/config_sv_insertions.sh
 ```
 
 For each SV size, this runs:

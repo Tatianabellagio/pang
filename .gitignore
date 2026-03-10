@@ -3,6 +3,10 @@
 ############################
 *
 
+# Ignore .claude directory
+.claude/
+/repo_visor/
+
 # Allow directories so git can traverse into them
 !*/
 

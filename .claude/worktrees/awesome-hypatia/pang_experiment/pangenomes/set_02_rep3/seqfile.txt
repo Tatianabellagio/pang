@@ -1,0 +1,2 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Sus-1	/home/tbellagio/scratch/pang/pang_experiment/genomes/Sus-1.fasta

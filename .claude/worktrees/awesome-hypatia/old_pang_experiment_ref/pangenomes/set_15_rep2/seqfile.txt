@@ -1,0 +1,16 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/TAIR10.fasta
+St-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/St-0.fasta
+Cvi-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Cvi-0.fasta
+Anz-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Anz-0.fasta
+Oy-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Oy-0.fasta
+Can-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Can-0.fasta
+Stw-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Stw-0.fasta
+Zal-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Zal-1.fasta
+Ct-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Ct-1.fasta
+Mh-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Mh-0.fasta
+Sus-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Sus-1.fasta
+Ms-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Ms-0.fasta
+No-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/No-0.fasta
+Dog-4	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Dog-4.fasta
+Altai-5	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Altai-5.fasta
+Toufl-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Toufl-1.fasta

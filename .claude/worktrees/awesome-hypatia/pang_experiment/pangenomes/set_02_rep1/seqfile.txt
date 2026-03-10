@@ -1,0 +1,2 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+No-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta

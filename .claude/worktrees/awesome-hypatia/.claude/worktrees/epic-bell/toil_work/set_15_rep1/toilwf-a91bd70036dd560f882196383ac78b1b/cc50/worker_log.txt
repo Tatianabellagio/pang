@@ -1,0 +1,10 @@
+[2026-01-31T07:54:30-0800] [MainThread] [I] [toil.worker] ---TOIL WORKER OUTPUT LOG---
+[2026-01-31T07:54:30-0800] [MainThread] [I] [toil] Running Toil version 9.1.2-355b72ba0e425619c0367562caf2a337078dba65 on host memex-2015-004.bsehpc.carnegiescience.edu.
+[2026-01-31T07:54:30-0800] [MainThread] [I] [toil.worker] Working on job 'minigraph_construct' kind-minigraph_construct/instance-6czbzirz v1
+[2026-01-31T07:54:36-0800] [MainThread] [I] [toil.worker] Loaded body Job('minigraph_construct' kind-minigraph_construct/instance-6czbzirz v1) from description 'minigraph_construct' kind-minigraph_construct/instance-6czbzirz v1
+[2026-01-31T07:54:36-0800] [MainThread] [I] [cactus.shared.common] Running the command ['bash', '-c', 'set -eo pipefail && minigraph -c -xggs -t 8 TAIR10.fa Mh-0.fa St-0.fa Stw-0.fa No-0.fa Ct-1.fa Anz-0.fa Ms-0.fa Dog-4.fa Altai-5.fa Kar-1.fa Rubezhnoe-1.fa Zal-1.fa Qar-8a.fa Can-0.fa | bgzip --threads 8']
+[2026-01-31T07:54:36-0800] [MainThread] [I] [toil-rt] 2026-01-31 07:54:36.555312: Running the command: "bash -c set -eo pipefail && minigraph -c -xggs -t 8 TAIR10.fa Mh-0.fa St-0.fa Stw-0.fa No-0.fa Ct-1.fa Anz-0.fa Ms-0.fa Dog-4.fa Altai-5.fa Kar-1.fa Rubezhnoe-1.fa Zal-1.fa Qar-8a.fa Can-0.fa | bgzip --threads 8"
+[2026-01-31T07:54:38-0800] [MainThread] [I] [toil-rt] [minigraph]: [M::main::1.621*0.14] loaded the graph from "TAIR10.fa"
+[2026-01-31T07:54:42-0800] [MainThread] [I] [toil-rt] [minigraph]: [M::mg_index::5.424*0.98] indexed the graph
+[2026-01-31T07:54:42-0800] [MainThread] [I] [toil-rt] [minigraph]: [M::mg_opt_update::5.714*0.98] occ_max1=35; lc_max_occ=2
+[2026-01-31T07:54:44-0800] [MainThread] [I] [toil-rt] [minigraph]: [M::ggen_map::7.628*0.79] loaded file "Mh-0.fa"

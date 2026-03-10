@@ -1,0 +1,5 @@
+66d99ec3799e933bf7af5cade733a7bf  ncbi_dataset/data/data_summary.tsv
+b725688dceee6cfaf402e91d8f8cc312  ncbi_dataset/data/assembly_data_report.jsonl
+0dcaa7e6ff0dea74cde4fd0fbf19cfe3  ncbi_dataset/data/GCA_000001735.2/GCA_000001735.2_TAIR10.1_genomic.fna
+cdd0e8abffbe11ad045f89e30f2721c1  ncbi_dataset/data/GCF_000001735.4/GCF_000001735.4_TAIR10.1_genomic.fna
+38ac51ecaf3856b2cb7bf9e443d7f4fb  ncbi_dataset/data/dataset_catalog.json

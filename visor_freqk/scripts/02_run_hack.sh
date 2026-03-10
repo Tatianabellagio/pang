@@ -23,6 +23,23 @@ source "${CONFIG_FILE}"
 
 mkdir -p logs "${HAPS}"
 
+# -----------------------------------------------------------------------------
+# Create WT clone (reference with no variants) for SHORtS. SHORtS expects each
+# sample dir to contain *.fa; 03_run_shorts uses WT_CLONE as the second clone.
+# Without this, SHORtS would fail (or use wrong/missing path).
+# -----------------------------------------------------------------------------
+WT_CLONE_DIR="${WT_CLONE}"
+mkdir -p "${WT_CLONE_DIR}"
+REF_FA="${WT_CLONE_DIR}/$(basename "${REF}")"
+if [[ ! -s "${REF_FA}" ]]; then
+  echo "[$(date)] Creating WT clone at ${WT_CLONE_DIR} (copy of reference)"
+  cp "${REF}" "${REF_FA}"
+  cp "${REF}.fai" "${WT_CLONE_DIR}/$(basename "${REF}.fai")"
+  echo "[$(date)] WT clone ready: ${REF_FA}"
+else
+  echo "[$(date)] WT clone already exists: ${REF_FA}"
+fi
+
 case "${SV_TYPE}" in
   "DEL")
     for SIZE in "${!DEL_SIZES[@]}"; do
@@ -31,6 +48,7 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
 
+        rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
         mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
         echo "[$(date)] Running VISOR HACk (DEL) for size: ${SIZE} (len=${LEN})"
@@ -49,6 +67,7 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/ins_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/ins_${SIZE}/HAP2
 
+        rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
         mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
         echo "[$(date)] Running VISOR HACk (INS) for size: ${SIZE} (len=${LEN})"

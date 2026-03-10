@@ -1,0 +1,18 @@
+#!/bin/bash
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_02_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_02_rep2.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_02_rep3.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_05_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_05_rep2.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_05_rep3.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_10_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_10_rep2.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_10_rep3.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_15_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_15_rep2.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_15_rep3.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_18_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_50_rep1.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_50_rep2.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_50_rep3.sh
+sbatch /home/tbellagio/scratch/pang/pang_experiment/scripts/run_set_all_rep1.sh

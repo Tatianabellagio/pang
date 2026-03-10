@@ -25,8 +25,16 @@ FREQ_LABEL=$(awk -v f="${FREQ}" 'BEGIN{printf "%.0f", f*100}')
 ERR_LABEL=$(awk -v e="${ERROR_RATE}" 'BEGIN{printf "%.0f", e*100}')
 RUN_TAG="f${FREQ_LABEL}_err${ERR_LABEL}"
 
-# WT clone (shared across all sizes, when defined)
+# WT clone (shared across all sizes; must exist — created by 02_run_hack)
 CLONE_WT=${WT_CLONE}
+if [[ ! -d "${CLONE_WT}" ]]; then
+  echo "ERROR: WT clone directory missing: ${CLONE_WT}. Run 02_run_hack first (it creates _clone_WT)." >&2
+  exit 1
+fi
+if ! compgen -G "${CLONE_WT}"/*.fa > /dev/null 2>&1; then
+  echo "ERROR: No *.fa in WT clone: ${CLONE_WT}. Run 02_run_hack first." >&2
+  exit 1
+fi
 
 mkdir -p logs "${BEDS}"
 
