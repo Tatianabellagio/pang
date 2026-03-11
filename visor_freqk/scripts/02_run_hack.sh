@@ -49,6 +49,37 @@ validate_hap() {
 }
 
 # -----------------------------------------------------------------------------
+# acquire_lock <lock_dir> [max_wait_seconds]
+# NFS-safe mutex using atomic mkdir. Spins until the lock directory is created
+# by this process, then registers a trap to release it on exit.
+# Multiple concurrent 02_run_hack jobs share haplotype paths (same sv_type +
+# pos_label), so without locking they race to write the same h1.fa on NFS,
+# producing duplicate Chr1 headers and "Stale file handle" errors.
+# -----------------------------------------------------------------------------
+acquire_lock() {
+  local lock="$1"
+  local max_wait="${2:-300}"
+  local waited=0
+  while ! mkdir "$lock" 2>/dev/null; do
+    echo "[lock] Waiting for $lock (held by another job)..."
+    sleep $((RANDOM % 10 + 5))
+    waited=$((waited + 10))
+    if [[ $waited -ge $max_wait ]]; then
+      echo "[lock] Timeout waiting for $lock — removing stale lock and retrying" >&2
+      rm -rf "$lock"
+    fi
+  done
+  # Release lock on any exit (normal, error, or signal)
+  trap "rm -rf '${lock}'" EXIT INT TERM
+}
+
+release_lock() {
+  local lock="$1"
+  rm -rf "$lock"
+  trap - EXIT INT TERM
+}
+
+# -----------------------------------------------------------------------------
 # Create WT clone (reference with no variants) for SHORtS. SHORtS expects each
 # sample dir to contain *.fa; 03_run_shorts uses WT_CLONE as the second clone.
 # Without this, SHORtS would fail (or use wrong/missing path).
@@ -73,6 +104,9 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
 
+        LOCK="${HAPS}/del_${SIZE}.lock"
+        acquire_lock "$LOCK"
+
         # If haplotypes already exist AND are valid (1 sequence each), skip recomputation
         if validate_hap "${HAP1_OUT}/h1.fa" && validate_hap "${HAP2_OUT}/h1.fa"; then
           echo "[$(date)] Reusing existing haplotypes for DEL ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
@@ -90,6 +124,8 @@ case "${SV_TYPE}" in
 
           echo "[$(date)] Done: del_${SIZE}"
         fi
+
+        release_lock "$LOCK"
     done
     echo "[$(date)] All deletions processed. Haplotypes in ${HAPS}"
     ;;
@@ -99,6 +135,9 @@ case "${SV_TYPE}" in
         BED=${BEDS}/hack_ins_${SIZE}.bed
         HAP1_OUT=${HAPS}/ins_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/ins_${SIZE}/HAP2
+
+        LOCK="${HAPS}/ins_${SIZE}.lock"
+        acquire_lock "$LOCK"
 
         if validate_hap "${HAP1_OUT}/h1.fa" && validate_hap "${HAP2_OUT}/h1.fa"; then
           echo "[$(date)] Reusing existing haplotypes for INS ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
@@ -116,6 +155,8 @@ case "${SV_TYPE}" in
 
           echo "[$(date)] Done: ins_${SIZE}"
         fi
+
+        release_lock "$LOCK"
     done
     echo "[$(date)] All insertions processed. Haplotypes in ${HAPS}"
     ;;
