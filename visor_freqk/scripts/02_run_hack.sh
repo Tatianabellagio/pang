@@ -48,15 +48,20 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
 
-        rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
-        mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
+        # If haplotypes already exist (both HAP1 and HAP2 have h1.fa), skip recomputation
+        if [[ -s "${HAP1_OUT}/h1.fa" && -s "${HAP2_OUT}/h1.fa" ]]; then
+          echo "[$(date)] Reusing existing haplotypes for DEL ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
+        else
+          rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
+          mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
-        echo "[$(date)] Running VISOR HACk (DEL) for size: ${SIZE} (len=${LEN})"
+          echo "[$(date)] Running VISOR HACk (DEL) for size: ${SIZE} (len=${LEN})"
 
-        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
-        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
+          VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+          VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
 
-        echo "[$(date)] Done: del_${SIZE}"
+          echo "[$(date)] Done: del_${SIZE}"
+        fi
     done
     echo "[$(date)] All deletions processed. Haplotypes in ${HAPS}"
     ;;
@@ -67,15 +72,19 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/ins_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/ins_${SIZE}/HAP2
 
-        rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
-        mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
+        if [[ -s "${HAP1_OUT}/h1.fa" && -s "${HAP2_OUT}/h1.fa" ]]; then
+          echo "[$(date)] Reusing existing haplotypes for INS ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
+        else
+          rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
+          mkdir -p "${HAP1_OUT}" "${HAP2_OUT}"
 
-        echo "[$(date)] Running VISOR HACk (INS) for size: ${SIZE} (len=${LEN})"
+          echo "[$(date)] Running VISOR HACk (INS) for size: ${SIZE} (len=${LEN})"
 
-        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
-        VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
+          VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+          VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
 
-        echo "[$(date)] Done: ins_${SIZE}"
+          echo "[$(date)] Done: ins_${SIZE}"
+        fi
     done
     echo "[$(date)] All insertions processed. Haplotypes in ${HAPS}"
     ;;

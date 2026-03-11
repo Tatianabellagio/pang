@@ -30,7 +30,13 @@ case "${SV_TYPE}" in
       LEN=${DEL_SIZES[$SIZE]}
       END=$((SV_START_0 + LEN))
       BED="${BEDS}/hack_del_${SIZE}.bed"
-      echo -e "${CHROM}\t${SV_START_0}\t${END}\tdeletion\tNone\t0" > "${BED}"
+      # If a BED with these parameters already exists, reuse it
+      if [[ -s "${BED}" ]]; then
+        echo "[$(date)]   Reusing existing BED for ${SIZE}: ${BED}"
+      else
+        echo "[$(date)]   Writing BED for ${SIZE}: ${BED}"
+        echo -e "${CHROM}\t${SV_START_0}\t${END}\tdeletion\tNone\t0" > "${BED}"
+      fi
     done
     echo "[$(date)] Done. Deletion BED files created for active sizes:"
     for SIZE in "${!DEL_SIZES[@]}"; do
@@ -42,6 +48,10 @@ case "${SV_TYPE}" in
     for SIZE in "${!INS_SIZES[@]}"; do
       LEN=${INS_SIZES[$SIZE]}
       BED="${BEDS}/hack_ins_${SIZE}.bed"
+      if [[ -s "${BED}" ]]; then
+        echo "[$(date)]   Reusing existing BED for ${SIZE}: ${BED}"
+        continue
+      fi
       # HACk expects column 5 to be the actual DNA sequence to insert (inf),
       # and column 6 to be the length of an additional random sequence at the breakpoint.
       # Use a reproducible, GC-aware random sequence (not poly-A) and set random seq length to 0.

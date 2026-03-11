@@ -25,8 +25,8 @@ declare -A DEL_SIZES=(
 
 # Pool-seq design
 FREQ=0.50
-COVERAGE=50
-ERROR_RATE=0.000
+COVERAGE=10
+ERROR_RATE=0.001
 WT_CLONE=${HAPS}/_clone_WT
 
 # freqk

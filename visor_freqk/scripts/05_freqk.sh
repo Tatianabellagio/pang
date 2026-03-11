@@ -23,15 +23,40 @@ source "${CONFIG_FILE}"
 
 mkdir -p "${RESULTS}"
 
-# Derive the same RUN_TAG as in 03_run_shorts.sh
+# Derive the same RUN_TAG as in 03_run_shorts.sh (cov/freq/error)
 FREQ_LABEL=$(awk -v f="${FREQ}" 'BEGIN{printf "%.0f", f*100}')
-ERR_LABEL=$(awk -v e="${ERROR_RATE}" 'BEGIN{printf "%.0f", e*100}')
+is_zero_rt=$(awk -v e="${ERROR_RATE}" 'BEGIN{ if (e==0) print "yes"; else print "no"; }')
+if [[ "${is_zero_rt}" == "yes" ]]; then
+  ERR_LABEL="0"
+else
+  if [[ "${ERROR_RATE}" == *.* ]]; then
+    dec_rt="${ERROR_RATE#*.}"
+  else
+    dec_rt="${ERROR_RATE}"
+  fi
+  ERR_LABEL="${dec_rt}"
+fi
 RUN_TAG="f${FREQ_LABEL}_err${ERR_LABEL}"
 
 # Labels for requested results folder structure:
 # results/coverage_sequencingerror/sv_type/sv_length/sv_freq/freqk_k/
 COV_LABEL=$(awk -v c="${COVERAGE}" 'BEGIN{printf "cov%d", c}')
-ERR_LABEL_DIR=$(awk -v e="${ERROR_RATE}" 'BEGIN{printf "err%.0f", e*100}')
+# Encode full error rate using the digits after the decimal point in ERROR_RATE:
+#   ERROR_RATE=0       -> err0
+#   ERROR_RATE=0.001   -> err001
+#   ERROR_RATE=0.01    -> err01
+#   ERROR_RATE=0.123   -> err123
+is_zero=$(awk -v e="${ERROR_RATE}" 'BEGIN{ if (e==0) print "yes"; else print "no"; }')
+if [[ "${is_zero}" == "yes" ]]; then
+  ERR_LABEL_DIR="err0"
+else
+  if [[ "${ERROR_RATE}" == *.* ]]; then
+    dec="${ERROR_RATE#*.}"
+  else
+    dec="${ERROR_RATE}"
+  fi
+  ERR_LABEL_DIR="err${dec}"
+fi
 FREQ_LABEL_DIR=$(awk -v f="${FREQ}" 'BEGIN{printf "f%.0f", f*100}')
 K_LABEL="k${K}"
 
@@ -47,7 +72,7 @@ case "${SV_TYPE}" in
       VAR_INDEX=${BASE_DIR}/del_${SIZE}.k${K}.freqk.var_index
       REF_INDEX=${BASE_DIR}/del_${SIZE}.k${K}.freqk.ref_index
 
-      READS_DIR=${READS}/freq_${SIZE}_${RUN_TAG}
+      READS_DIR=${READS}/${COV_LABEL}/freq_${SIZE}_${RUN_TAG}
       RESULTS_DIR=${BASE_DIR}
       mkdir -p "${RESULTS_DIR}"
 
@@ -114,7 +139,7 @@ case "${SV_TYPE}" in
       VAR_INDEX=${BASE_DIR}/ins_${SIZE}.k${K}.freqk.var_index
       REF_INDEX=${BASE_DIR}/ins_${SIZE}.k${K}.freqk.ref_index
 
-      READS_DIR=${READS}/freq_${SIZE}_${RUN_TAG}
+      READS_DIR=${READS}/${COV_LABEL}/freq_${SIZE}_${RUN_TAG}
       RESULTS_DIR=${BASE_DIR}
       mkdir -p "${RESULTS_DIR}"
 

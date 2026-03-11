@@ -20,9 +20,24 @@ source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
 CONFIG_FILE=${1:-"$(dirname "$0")/config_sv_deletions.sh"}
 source "${CONFIG_FILE}"
 
-# Derive labels for freq/error, so we can reuse them later with freqk
+# Derive labels for cov/freq/error so reads dirs are experiment-specific
+COV_LABEL=$(awk -v c="${COVERAGE}" 'BEGIN{printf "cov%d", c}')
 FREQ_LABEL=$(awk -v f="${FREQ}" 'BEGIN{printf "%.0f", f*100}')
-ERR_LABEL=$(awk -v e="${ERROR_RATE}" 'BEGIN{printf "%.0f", e*100}')
+# Encode error using digits after the decimal point in ERROR_RATE:
+#   ERROR_RATE=0       -> err0
+#   ERROR_RATE=0.001   -> err001
+#   ERROR_RATE=0.01    -> err01
+is_zero=$(awk -v e="${ERROR_RATE}" 'BEGIN{ if (e==0) print "yes"; else print "no"; }')
+if [[ "${is_zero}" == "yes" ]]; then
+  ERR_LABEL="0"
+else
+  if [[ "${ERROR_RATE}" == *.* ]]; then
+    dec="${ERROR_RATE#*.}"
+  else
+    dec="${ERROR_RATE}"
+  fi
+  ERR_LABEL="${dec}"
+fi
 RUN_TAG="f${FREQ_LABEL}_err${ERR_LABEL}"
 
 # WT clone (shared across all sizes; must exist — created by 02_run_hack)
@@ -49,7 +64,7 @@ case "${SV_TYPE}" in
     for SIZE in "${!DEL_SIZES[@]}"; do
       CLONE_DEL="${HAPS}/del_${SIZE}/HAP1"
 
-      OUT="${READS}/freq_${SIZE}_${RUN_TAG}"
+      OUT="${READS}/${COV_LABEL}/freq_${SIZE}_${RUN_TAG}"
       rm -rf "${OUT}"
       mkdir -p "${OUT}"
 
@@ -74,7 +89,7 @@ case "${SV_TYPE}" in
     for SIZE in "${!INS_SIZES[@]}"; do
       CLONE_INS="${HAPS}/ins_${SIZE}/HAP1"
 
-      OUT="${READS}/freq_${SIZE}_${RUN_TAG}"
+      OUT="${READS}/${COV_LABEL}/freq_${SIZE}_${RUN_TAG}"
       rm -rf "${OUT}"
       mkdir -p "${OUT}"
 

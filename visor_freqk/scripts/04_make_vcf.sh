@@ -21,6 +21,8 @@ source "$(mamba info --base)/etc/profile.d/conda.sh" && conda activate pang
 CONFIG_FILE=${1:-"$(dirname "$0")/config_sv_deletions.sh"}
 source "${CONFIG_FILE}"
 
+# VCF output is per (SV_TYPE, SIZE) only; content does not depend on COVERAGE, FREQ, or ERROR_RATE.
+# Different experiments (cov/err/freq) share the same VCF; only reads and results paths vary.
 mkdir -p "${VCF_DIR}" logs
 
 case "${SV_TYPE}" in
