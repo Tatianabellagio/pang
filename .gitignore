@@ -3,10 +3,6 @@
 ############################
 *
 
-# Ignore .claude directory
-.claude/
-/repo_visor/
-
 # Allow directories so git can traverse into them
 !*/
 
@@ -47,7 +43,7 @@
 
 # Docs
 !*.md
-!*.txt
+#!*.txt
 
 ############################
 # Jupyter noise (still ignore)
@@ -55,3 +51,6 @@
 .ipynb_checkpoints/
 **/.ipynb_checkpoints/
 
+# Ignore .claude directory
+.claude/
+/repo_visor/

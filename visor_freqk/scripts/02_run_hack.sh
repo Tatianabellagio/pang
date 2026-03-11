@@ -24,6 +24,31 @@ source "${CONFIG_FILE}"
 mkdir -p logs "${HAPS}"
 
 # -----------------------------------------------------------------------------
+# validate_hap <fa_path>
+# Returns 0 if the haplotype FASTA is healthy (exactly 1 sequence in .fai).
+# If corrupted (duplicate sequence headers, wrong .fai line count), prints a
+# warning, deletes the bad fa + fai, and returns 1 so the caller re-runs HACk.
+# Using .fai line count is fast (tiny file) and catches the VISOR HACk bug
+# that occasionally writes Chr1 twice, producing a ~2x-sized FASTA.
+# -----------------------------------------------------------------------------
+validate_hap() {
+  local fa="$1"
+  local fai="${fa}.fai"
+  if [[ ! -s "$fa" ]]; then
+    echo "[validate] MISSING or empty: $fa" >&2
+    return 1
+  fi
+  local n_seqs
+  n_seqs=$(wc -l < "$fai" 2>/dev/null || echo 0)
+  if [[ "$n_seqs" -ne 1 ]]; then
+    echo "[validate] CORRUPTED: $fa has ${n_seqs} sequence(s) in .fai (expected 1) — deleting" >&2
+    rm -f "$fa" "$fai"
+    return 1
+  fi
+  return 0
+}
+
+# -----------------------------------------------------------------------------
 # Create WT clone (reference with no variants) for SHORtS. SHORtS expects each
 # sample dir to contain *.fa; 03_run_shorts uses WT_CLONE as the second clone.
 # Without this, SHORtS would fail (or use wrong/missing path).
@@ -48,8 +73,8 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/del_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/del_${SIZE}/HAP2
 
-        # If haplotypes already exist (both HAP1 and HAP2 have h1.fa), skip recomputation
-        if [[ -s "${HAP1_OUT}/h1.fa" && -s "${HAP2_OUT}/h1.fa" ]]; then
+        # If haplotypes already exist AND are valid (1 sequence each), skip recomputation
+        if validate_hap "${HAP1_OUT}/h1.fa" && validate_hap "${HAP2_OUT}/h1.fa"; then
           echo "[$(date)] Reusing existing haplotypes for DEL ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
         else
           rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
@@ -58,7 +83,10 @@ case "${SV_TYPE}" in
           echo "[$(date)] Running VISOR HACk (DEL) for size: ${SIZE} (len=${LEN})"
 
           VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+          validate_hap "${HAP1_OUT}/h1.fa" || { echo "HACk produced corrupt HAP1 for DEL ${SIZE}" >&2; exit 1; }
+
           VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
+          validate_hap "${HAP2_OUT}/h1.fa" || { echo "HACk produced corrupt HAP2 for DEL ${SIZE}" >&2; exit 1; }
 
           echo "[$(date)] Done: del_${SIZE}"
         fi
@@ -72,7 +100,7 @@ case "${SV_TYPE}" in
         HAP1_OUT=${HAPS}/ins_${SIZE}/HAP1
         HAP2_OUT=${HAPS}/ins_${SIZE}/HAP2
 
-        if [[ -s "${HAP1_OUT}/h1.fa" && -s "${HAP2_OUT}/h1.fa" ]]; then
+        if validate_hap "${HAP1_OUT}/h1.fa" && validate_hap "${HAP2_OUT}/h1.fa"; then
           echo "[$(date)] Reusing existing haplotypes for INS ${SIZE} in ${HAP1_OUT}, ${HAP2_OUT}"
         else
           rm -rf "${HAP1_OUT}" "${HAP2_OUT}"
@@ -81,7 +109,10 @@ case "${SV_TYPE}" in
           echo "[$(date)] Running VISOR HACk (INS) for size: ${SIZE} (len=${LEN})"
 
           VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP1_OUT}"
+          validate_hap "${HAP1_OUT}/h1.fa" || { echo "HACk produced corrupt HAP1 for INS ${SIZE}" >&2; exit 1; }
+
           VISOR HACk -g "${REF}" -b "${BED}" -o "${HAP2_OUT}"
+          validate_hap "${HAP2_OUT}/h1.fa" || { echo "HACk produced corrupt HAP2 for INS ${SIZE}" >&2; exit 1; }
 
           echo "[$(date)] Done: ins_${SIZE}"
         fi
