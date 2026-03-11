@@ -1,0 +1,6 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/TAIR10.fasta
+Rubezhnoe-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Rubezhnoe-1.fasta
+Zal-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Zal-1.fasta
+Can-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Can-0.fasta
+Cvi-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Cvi-0.fasta
+No-0	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/No-0.fasta

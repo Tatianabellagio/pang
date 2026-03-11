@@ -1,0 +1,16 @@
+TAIR10	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Mh-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Mh-0.fasta
+Altai-5	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
+Ct-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ct-1.fasta
+Anz-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
+Rubezhnoe-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Rubezhnoe-1.fasta
+Qar-8a	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Qar-8a.fasta
+Zal-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Zal-1.fasta
+Can-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Can-0.fasta
+St-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/St-0.fasta
+Ms-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Ms-0.fasta
+Dog-4	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
+Stw-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Stw-0.fasta
+No-0	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/No-0.fasta
+Kar-1	file:///home/tbellagio/scratch/pang/pang_experiment/genomes/Kar-1.fasta
+_MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment/pangenomes/set_15_rep1/output/set_15_rep1.sv.gfa.fa.gz

@@ -1,0 +1,5 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Dog-4	/home/tbellagio/scratch/pang/pang_experiment/genomes/Dog-4.fasta
+Altai-5	/home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
+Anz-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Anz-0.fasta
+Cvi-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Cvi-0.fasta

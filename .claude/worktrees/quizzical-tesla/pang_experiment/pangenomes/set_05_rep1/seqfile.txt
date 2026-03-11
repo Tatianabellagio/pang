@@ -1,0 +1,5 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment/genomes/TAIR10.fasta
+Altai-5	/home/tbellagio/scratch/pang/pang_experiment/genomes/Altai-5.fasta
+Oy-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/Oy-0.fasta
+Qar-8a	/home/tbellagio/scratch/pang/pang_experiment/genomes/Qar-8a.fasta
+St-0	/home/tbellagio/scratch/pang/pang_experiment/genomes/St-0.fasta

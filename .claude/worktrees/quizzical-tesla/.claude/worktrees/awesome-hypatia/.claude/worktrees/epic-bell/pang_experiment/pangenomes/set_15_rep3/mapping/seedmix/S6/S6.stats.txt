@@ -1,0 +1,17 @@
+Total alignments: 70309590
+Total primary: 70309590
+Total secondary: 0
+Total aligned: 62413559
+Total perfect: 39191187
+Total gapless (softclips allowed): 59834629
+Total paired: 70309590
+Total properly paired: 61699624
+Alignment score: mean 137.511, median 155, stdev 34.4885, max 160 (28517126 reads)
+Mapping quality: mean 45.3524, median 60, stdev 24.4486, max 60 (44591114 reads)
+Insertions: 3025351 bp in 1248340 read events
+Deletions: 6134487 bp in 2357525 read events
+Substitutions: 60207361 bp in 60207361 read events
+Matches: 8242048676 bp (117.225 bp/alignment)
+Softclips: 192467790 bp (2.26493% of bases, 2.73743 bp/alignment) in 4277840 read events
+Total time: 266759 seconds
+Speed: 263.569 reads/second

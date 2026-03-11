@@ -1,0 +1,23 @@
+## get total pangenomes completed
+
+BASE=~/scratch/pang/pang_experiment_ref
+
+# list the actual gbz files that exist (both .gbz and .d2.gbz), unique + sorted
+find "$BASE/pangenomes" -type f \( -name "*.d2.gbz" \) \
+  | sort -u | tee /tmp/pangenomes_ready_paths.txt
+
+echo
+echo "TOTAL_READY_GBZ: $(wc -l < /tmp/pangenomes_ready_paths.txt)"
+
+
+
+
+## get total alignments compelted 
+
+BASE=~/scratch/pang/pang_experiment_ref
+
+find "$BASE/pangenomes" -type f -name "*.alignment_stats.tsv" \
+  | sort | tee /tmp/alignment_stats_paths.txt
+
+echo
+echo "TOTAL_ALIGNMENT_STATS: $(wc -l < /tmp/alignment_stats_paths.txt)"

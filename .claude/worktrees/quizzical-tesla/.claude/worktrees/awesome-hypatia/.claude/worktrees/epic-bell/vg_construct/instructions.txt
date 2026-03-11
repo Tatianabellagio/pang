@@ -1,0 +1,46 @@
+got the pek assembly from ncbi 
+got the 3 vcfs from the data repo of the 69 g paper
+
+
+
+# Create a contig renaming map because pek had different headers 
+cat > colpek.rename.tsv <<'EOF'
+CP087126.2	Chr1
+CP087127.2	Chr2
+CP087128.1	Chr3
+CP087129.2	Chr4
+CP087130.2	Chr5
+EOF
+
+
+## rename fasta contigs 
+
+samtools faidx Col-PEK.fa
+(
+  echo ">Chr1"
+  samtools faidx Col-PEK.fa CP087126.2 | tail -n +2
+  echo ">Chr2"
+  samtools faidx Col-PEK.fa CP087127.2 | tail -n +2
+  echo ">Chr3"
+  samtools faidx Col-PEK.fa CP087128.1 | tail -n +2
+  echo ">Chr4"
+  samtools faidx Col-PEK.fa CP087129.2 | tail -n +2
+  echo ">Chr5"
+  samtools faidx Col-PEK.fa CP087130.2 | tail -n +2
+) > Col-PEK.Chr.fa
+
+
+# index fasta
+samtools faidx Col-PEK.Chr.fa
+
+
+## add correct contig header to vcf becasue they were not there
+bcftools reheader --fai Col-PEK.Chr.fa.fai -o g2.reheadered.vcf.gz g2.vcf.gz
+# sort vcf 
+bcftools sort -Oz -o g2.sorted.vcf.gz g2.reheadered.vcf.gz
+
+# also i will rename the samples becasue they are the paths 
+
+bcftools query -l g2.sorted.vcf.gz > samples.old.txt
+awk -F'/' '{old=$0; acc=$3; print old"\t"acc}' samples.old.txt > samples.rename.tsv
+bcftools reheader -s samples.rename.tsv -o g2.renamed.vcf.gz g2.sorted.vcf.gz

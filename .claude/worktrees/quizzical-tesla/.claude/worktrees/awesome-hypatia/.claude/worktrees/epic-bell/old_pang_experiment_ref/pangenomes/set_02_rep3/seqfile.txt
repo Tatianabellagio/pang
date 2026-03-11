@@ -1,0 +1,3 @@
+TAIR10	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/TAIR10.fasta
+Toufl-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Toufl-1.fasta
+Zal-1	/home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Zal-1.fasta

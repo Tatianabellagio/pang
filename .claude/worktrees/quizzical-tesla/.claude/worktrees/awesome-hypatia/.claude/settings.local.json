@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:davidebolo1993.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/davidebolo1993/VISOR/master/VISOR/HACk/HACk.py\")",
+      "Bash(grep -l -i \"insert\" /Users/tatiana/Documents_new/pang/.claude/worktrees/awesome-hypatia/visor_freqk/scripts/*.sh)",
+      "Bash(xargs ls -la)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang diff b43e4a8872db551ac33877d901471878e30dee81 HEAD -- visor_freqk/scripts/)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang ls-tree -r --name-only b43e4a8872db551ac33877d901471878e30dee81 -- visor_freqk/scripts/)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/01_make_beds.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/02_run_hack.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/03_run_shorts.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/04_run_shorts_freqtest.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/04_run_shorts_freqtest_0seq_error.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/04_run_shorts_freqtest_all_noerr.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/05_make_vcf.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/05_make_vcf_all.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/06_freqk_index.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/06_freqk_index_all.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/07_freqk_dedup_count_call.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/07_freqk_dedup_count_call_all_noerror.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/07_freqk_dedup_count_call_noerror.sh)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/checks.txt)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang show b43e4a8872db551ac33877d901471878e30dee81:visor_freqk/scripts/test.ipynb)",
+      "Bash(python3 -c \":*)",
+      "Bash(git -C /Users/tatiana/Documents_new/pang diff b43e4a8872db551ac33877d901471878e30dee81 HEAD -- 'visor_freqk/scripts/01_make_beds.sh' 'visor_freqk/scripts/02_run_hack.sh' 'visor_freqk/scripts/03_run_shorts.sh' 'visor_freqk/scripts/04_run_shorts_freqtest.sh' 'visor_freqk/scripts/04_run_shorts_freqtest_0seq_error.sh' 'visor_freqk/scripts/04_run_shorts_freqtest_all_noerr.sh')",
+      "Bash(git -C /Users/tatiana/Documents_new/pang diff b43e4a8872db551ac33877d901471878e30dee81 HEAD -- 'visor_freqk/scripts/05_make_vcf.sh' 'visor_freqk/scripts/05_make_vcf_all.sh' 'visor_freqk/scripts/06_freqk_index.sh' 'visor_freqk/scripts/06_freqk_index_all.sh' 'visor_freqk/scripts/07_freqk_dedup_count_call.sh' 'visor_freqk/scripts/07_freqk_dedup_count_call_all_noerror.sh' 'visor_freqk/scripts/07_freqk_dedup_count_call_noerror.sh' 'visor_freqk/scripts/checks.txt' 'visor_freqk/scripts/test.ipynb')",
+      "Bash(git -C /Users/tatiana/Documents_new/pang diff b43e4a8872db551ac33877d901471878e30dee81 HEAD -- 'visor_freqk/scripts/04_make_vcf.sh' 'visor_freqk/scripts/05_freqk.sh' 'visor_freqk/scripts/config_sv_deletions.sh' 'visor_freqk/scripts/config_sv_insertions.sh')"
+    ]
+  }
+}
