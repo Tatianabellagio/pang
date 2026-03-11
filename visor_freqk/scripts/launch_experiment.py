@@ -3,12 +3,20 @@
 launch_experiment.py
 ====================
 Generate a VISOR-freqk config file and submit the pipeline to Slurm.
+One config + one pipeline submission is created per genomic position.
 
 Usage
 -----
+  # Single position (default: 10 Mb)
   python scripts/launch_experiment.py --sv-type DEL --coverage 50 --freq 0.50
-  python scripts/launch_experiment.py --sv-type INS --coverage 100 --freq 0.25 --error-rate 0.01 --k 21
-  python scripts/launch_experiment.py --sv-type DEL --coverage 30 --freq 0.10 --dry-run
+
+  # Multiple positions = replicates (one independent pipeline each)
+  python scripts/launch_experiment.py --sv-type DEL --coverage 50 --freq 0.50 \\
+      --positions 10000000 20000000 30000000
+
+  # Full example with all options
+  python scripts/launch_experiment.py --sv-type INS --coverage 100 --freq 0.25 \\
+      --error-rate 0.01 --k 21 --positions 10000000 25000000 --dry-run
 
 Required
 --------
@@ -18,9 +26,24 @@ Required
 
 Optional
 --------
+  --positions   one or more 0-based SV start positions on Chr1, in bp
+                (default: 10000000)
+                IMPORTANT: positions must be multiples of 1 Mb (e.g. 5000000,
+                10000000, 25000000) so that the folder label pos{N}mb is exact.
+                Also ensure positions are far enough from chromosome ends to
+                fit the largest SV size (>= 10 kb margin recommended).
   --error-rate  sequencing error rate (float, default: 0.001)
   --k           k-mer size for freqk (integer, default: 31)
   --dry-run     print config and command, do not submit
+
+Position → folder label mapping
+--------------------------------
+  --positions 10000000  →  POS_LABEL="pos10mb"  →  data/reads/del/pos10mb/...
+  --positions 25000000  →  POS_LABEL="pos25mb"  →  data/reads/del/pos25mb/...
+
+Each position gets its own independent subtree for beds, haplotypes, reads,
+VCFs, and results. The WT clone is shared across positions (it is just the
+reference with no variants).
 """
 
 import argparse
@@ -33,8 +56,8 @@ from pathlib import Path
 WORK   = "/home/tbellagio/scratch/pang/visor_freqk"
 FREQK  = "/home/tbellagio/scratch/pang/test_freqk/freqk/target/release/freqk"
 CHROM  = "Chr1"
+# Default single-position anchor (used when --positions is not provided)
 SV_START_0  = 10_000_000
-ANCHOR_POS  = 9_999_999   # DEL only: anchor base one before the deletion
 
 # ── SV size dictionaries ───────────────────────────────────────────────────────
 DEL_SIZES = {"100bp": 100, "500bp": 500, "1kb": 1000, "5kb": 5000, "10kb": 10000}
@@ -57,8 +80,19 @@ def format_error_label(error_rate: float) -> str:
     return s
 
 
+def pos_label_from_pos(pos: int) -> str:
+    """
+    Human-readable label for a genomic position.
+    For now, assume positions are on Chr1 and report in Mb:
+      10_000_000 -> 'pos10mb'
+      25_000_000 -> 'pos25mb'
+    """
+    mb = pos // 1_000_000
+    return f"pos{mb}mb"
+
 def generate_config(sv_type: str, coverage: int, freq: float,
-                    error_rate: float, k: int) -> str:
+                    error_rate: float, k: int,
+                    pos: int, pos_label: str) -> str:
     sv = sv_type.lower()
     freq_label  = int(round(freq * 100))
     err_label   = format_error_label(error_rate)
@@ -67,8 +101,10 @@ def generate_config(sv_type: str, coverage: int, freq: float,
     size_var = "DEL_SIZES" if sv_type == "DEL" else "INS_SIZES"
     size_lines = "\n".join(f'  ["{name}"]={val}' for name, val in sizes.items())
 
-    anchor_line = f"ANCHOR_POS={ANCHOR_POS}       # one base before deletion (VCF POS, 1-based)\n" \
-                  if sv_type == "DEL" else ""
+    anchor_line = ""
+    if sv_type == "DEL":
+        anchor_pos = pos - 1
+        anchor_line = f"ANCHOR_POS={anchor_pos}       # one base before deletion (VCF POS, 1-based)\n"
 
     return f"""\
 #!/bin/bash
@@ -77,15 +113,16 @@ def generate_config(sv_type: str, coverage: int, freq: float,
 
 WORK={WORK}
 REF=${{WORK}}/data/reference/Chr1.fa
-BEDS=${{WORK}}/data/beds/{sv}
-HAPS=${{WORK}}/data/haplotypes/{sv}
-READS=${{WORK}}/data/reads/{sv}
-VCF_DIR=${{WORK}}/data/vcf/{sv}
-RESULTS=${{WORK}}/results/{sv}
+BEDS=${{WORK}}/data/beds/{sv}/{pos_label}
+HAPS=${{WORK}}/data/haplotypes/{sv}/{pos_label}
+READS=${{WORK}}/data/reads/{sv}/{pos_label}
+VCF_DIR=${{WORK}}/data/vcf/{sv}/{pos_label}
+RESULTS=${{WORK}}/results/{sv}/{pos_label}
 
 SV_TYPE="{sv_type}"
 CHROM="{CHROM}"
-SV_START_0={SV_START_0}      # BED 0-based start
+SV_START_0={pos}      # BED 0-based start
+POS_LABEL="{pos_label}"
 {anchor_line}
 declare -A {size_var}=(
 {size_lines}
@@ -95,7 +132,7 @@ declare -A {size_var}=(
 FREQ={freq}
 COVERAGE={coverage}
 ERROR_RATE={error_rate}
-WT_CLONE=${{HAPS}}/_clone_WT
+WT_CLONE=${{WORK}}/data/haplotypes/{sv}/_clone_WT
 
 # freqk
 K={k}
@@ -121,6 +158,12 @@ def parse_args():
                    help="Sequencing error rate (default: 0.001)")
     p.add_argument("--k",          default=31,    type=int,
                    help="k-mer size for freqk (default: 31)")
+    p.add_argument(
+        "--positions", nargs="+", type=int,
+        help="0-based SV start positions on CHROM for replicates "
+             "(e.g. 10000000 20000000 30000000). "
+             "If omitted, a single default position is used."
+    )
     p.add_argument("--dry-run",    action="store_true",
                    help="Print config and command but do not submit")
     return p.parse_args()
@@ -129,54 +172,69 @@ def parse_args():
 def main():
     args = parse_args()
 
-    config_text = generate_config(
-        sv_type    = args.sv_type,
-        coverage   = args.coverage,
-        freq       = args.freq,
-        error_rate = args.error_rate,
-        k          = args.k,
-    )
+    # Determine replicate positions
+    if args.positions:
+        positions = args.positions
+    else:
+        positions = [SV_START_0]
 
-    # ── Write config to scripts/generated_configs/ ────────────────────────────
     scripts_dir  = Path(__file__).parent
     config_dir   = scripts_dir / "generated_configs"
     config_dir.mkdir(exist_ok=True)
 
     err_label  = format_error_label(args.error_rate)
     freq_label = int(round(args.freq * 100))
-    config_name = (
-        f"config_{args.sv_type.lower()}"
-        f"_cov{args.coverage}"
-        f"_f{freq_label}"
-        f"_err{err_label}"
-        f"_k{args.k}.sh"
-    )
-    config_path = config_dir / config_name
-    config_path.write_text(config_text)
-    config_path.chmod(0o644)
 
-    # ── Print summary ─────────────────────────────────────────────────────────
-    print("=" * 60)
-    print(f"  SV type    : {args.sv_type}")
-    print(f"  Coverage   : {args.coverage}x")
-    print(f"  Freq       : {args.freq}")
-    print(f"  Error rate : {args.error_rate}")
-    print(f"  K          : {args.k}")
-    print(f"  Config     : {config_path}")
-    print("=" * 60)
-    print(config_text)
-
-    # ── Launch pipeline ───────────────────────────────────────────────────────
     pipeline = scripts_dir / "run_pipeline.sh"
-    cmd = ["bash", str(pipeline), str(config_path)]
-    print(f"Command: {' '.join(cmd)}")
 
-    if args.dry_run:
-        print("\n[dry-run] Not submitting.")
-        return
+    for pos in positions:
+        pos_label = pos_label_from_pos(pos)
 
-    result = subprocess.run(cmd)
-    sys.exit(result.returncode)
+        config_text = generate_config(
+            sv_type    = args.sv_type,
+            coverage   = args.coverage,
+            freq       = args.freq,
+            error_rate = args.error_rate,
+            k          = args.k,
+            pos        = pos,
+            pos_label  = pos_label,
+        )
+
+        config_name = (
+            f"config_{args.sv_type.lower()}"
+            f"_cov{args.coverage}"
+            f"_f{freq_label}"
+            f"_err{err_label}"
+            f"_k{args.k}"
+            f"_{pos_label}.sh"
+        )
+        config_path = config_dir / config_name
+        config_path.write_text(config_text)
+        config_path.chmod(0o644)
+
+        # ── Print summary ─────────────────────────────────────────────────
+        print("=" * 60)
+        print(f"  SV type    : {args.sv_type}")
+        print(f"  Coverage   : {args.coverage}x")
+        print(f"  Freq       : {args.freq}")
+        print(f"  Error rate : {args.error_rate}")
+        print(f"  K          : {args.k}")
+        print(f"  Position   : {pos} ({pos_label})")
+        print(f"  Config     : {config_path}")
+        print("=" * 60)
+        print(config_text)
+
+        # ── Launch pipeline ───────────────────────────────────────────────
+        cmd = ["bash", str(pipeline), str(config_path)]
+        print(f"Command: {' '.join(cmd)}")
+
+        if args.dry_run:
+            print("\n[dry-run] Not submitting.")
+        else:
+            result = subprocess.run(cmd)
+            if result.returncode != 0:
+                sys.exit(result.returncode)
+
 
 
 if __name__ == "__main__":

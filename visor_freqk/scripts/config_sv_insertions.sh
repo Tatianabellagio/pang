@@ -1,20 +1,23 @@
 #!/bin/bash
 
-# Example config for insertion experiments (not yet wired into all scripts)
+# Example config for insertion experiments
 
 WORK=/home/tbellagio/scratch/pang/visor_freqk
 REF=${WORK}/data/reference/Chr1.fa
-BEDS=${WORK}/data/beds/ins
-HAPS=${WORK}/data/haplotypes/ins
-READS=${WORK}/data/reads/ins
-VCF_DIR=${WORK}/data/vcf/ins
-RESULTS=${WORK}/results/ins
 
 SV_TYPE="INS"
 CHROM="Chr1"
 
 # For insertions you'd typically specify the insertion site (0-based) and lengths
 SV_START_0=10000000
+POS_LABEL="pos10mb"      # human-readable label for this position
+
+# Design-dependent roots (per SV_TYPE and POS_LABEL)
+BEDS=${WORK}/data/beds/ins/${POS_LABEL}
+HAPS=${WORK}/data/haplotypes/ins/${POS_LABEL}
+READS=${WORK}/data/reads/ins/${POS_LABEL}
+VCF_DIR=${WORK}/data/vcf/ins/${POS_LABEL}
+RESULTS=${WORK}/results/ins/${POS_LABEL}
 
 declare -A INS_SIZES=(
   ["100bp"]=100
@@ -27,7 +30,8 @@ declare -A INS_SIZES=(
 FREQ=0.50
 COVERAGE=50
 ERROR_RATE=0.000
-WT_CLONE=${HAPS}/_clone_WT
+# Shared WT clone (reference only, does not depend on POS_LABEL)
+WT_CLONE=${WORK}/data/haplotypes/ins/_clone_WT
 
 K=31
 FREQK=/home/tbellagio/scratch/pang/test_freqk/freqk/target/release/freqk
