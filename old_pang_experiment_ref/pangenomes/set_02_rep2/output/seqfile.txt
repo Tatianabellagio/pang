@@ -1,4 +1,0 @@
-TAIR10	file:///home/tbellagio/scratch/pang/pang_experiment_ref/genomes/TAIR10.fasta
-Stw-0	file:///home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Stw-0.fasta
-Rubezhnoe-1	file:///home/tbellagio/scratch/pang/pang_experiment_ref/genomes/Rubezhnoe-1.fasta
-_MINIGRAPH_	/carnegie/nobackup/scratch/tbellagio/pang/pang_experiment_ref/pangenomes/set_02_rep2/output/set_02_rep2.sv.gfa.fa.gz

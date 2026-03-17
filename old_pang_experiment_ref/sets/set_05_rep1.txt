@@ -1,6 +1,0 @@
-TAIR10
-Dog-4
-No-0
-Ct-1
-Sus-1
-Cvi-0
